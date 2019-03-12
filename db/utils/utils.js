@@ -12,11 +12,7 @@ const articleDateTimeStamp = (timeArticle) => {
   return timeStampArticle;
 };
 
-const createRef = articles => {
-  return articles.reduce((refObj, { title, article_id }) => {
-    return { ...refObj, [title]: article_id };
-  }, {});
-}
+const createRef = articles => articles.reduce((refObj, { title, article_id }) => ({ ...refObj, [title]: article_id }), {});
 
 const createArticleIdLink = (commentRows, refObj) => {
   const formattedComments = commentRows.map(comment => ({
@@ -25,16 +21,8 @@ const createArticleIdLink = (commentRows, refObj) => {
     votes: comment.votes || 0,
     created_at: new Date(comment.created_at),
     body: comment.body,
-  }))
+  }));
   return formattedComments;
-}
+};
 
 module.exports = { articleDateTimeStamp, createRef, createArticleIdLink };
-
-
-// const createRef = owners => {
-//   return owners.reduce((refObj, { forename, owner_id }) => {
-//     console.log(refObj)
-//     return { ...refObj, [forename]: owner_id }
-//   }, {});
-// }
