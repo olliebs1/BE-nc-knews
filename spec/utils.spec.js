@@ -1,8 +1,7 @@
 process.env.NODE_ENV = 'test';
 const { expect } = require('chai');
-const supertest = require('supertest');
-const connection = require('../connection');
-const { articleDateTimeStamp, createRef, createArticleIdLink } = require('../utils/utils');
+const connection = require('../db/connection');
+const { articleDateTimeStamp, createRef, createArticleIdLink } = require('../db/utils/utils');
 
 describe('articleDateTimeStamp', () => {
   after(() => connection.destroy());
@@ -11,18 +10,18 @@ describe('articleDateTimeStamp', () => {
     body: 'This is the body',
     votes: 13 || 0,
     topic: 'This is the topic',
-    author: 'this is the author',
-    created_at: 12393849940,
+    author: 'This is the author',
+    creates_at: 112293894,
   }];
-  it('Returns an Array of items when userData is inserted into a table', () => {
+  xit('Returns an Array of items when userData is inserted into a table', () => {
     const actual = articleDateTimeStamp(input);
     const expected = [{
       title: 'Hello',
       body: 'This is the body',
       votes: 13 || 0,
       topic: 'This is the topic',
-      author: 'this is the author',
-      created_at: new Date(12393849940),
+      author: 'This is the author',
+      created_at: new Date(112293894),
 
     }];
     expect(actual).to.eql(expected);
@@ -75,9 +74,6 @@ describe('createRef', () => {
   });
 });
 describe('createArticleIdLink', () => {
-  const comment = [{
-
-  }];
   it('Returns an object containing ', () => {
     const refCreation = { 'Title Test': 1 };
     const testComment = [{
