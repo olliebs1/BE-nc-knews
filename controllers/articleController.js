@@ -1,5 +1,5 @@
 const {
-  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById,
+  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle,
 } = require('../models/articleModel');
 
 
@@ -54,6 +54,14 @@ const patchArticle = (req, res, next) => {
     });
 };
 
+const removeArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  deleteArticle(article_id)
+    .then(() => {
+      res.status(204).send({});
+    });
+};
+
 module.exports = {
-  getArticles, postArticles, getArticleById, patchArticle,
+  getArticles, postArticles, getArticleById, patchArticle, removeArticle,
 };

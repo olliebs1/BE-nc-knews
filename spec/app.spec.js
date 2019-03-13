@@ -116,7 +116,7 @@ describe('/', () => {
         .then((res) => {
           expect(res.body.article[0]).to.contain.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at', 'comment_count');
         }));
-      it.only('PATCH, returns status:202, and increments vote of article by 1 when passed a newVote with the value of 1', () => request
+      it('PATCH, returns status:202, and increments vote of article by 1 when passed a newVote with the value of 1', () => request
         .patch('/api/articles/1')
         .send({
           inc_votes: 1,
@@ -125,6 +125,12 @@ describe('/', () => {
         .then((res) => {
           expect(res.body.updatedArticle[0]).to.be.an('object');
           expect(res.body.updatedArticle[0].votes).to.eql(101);
+        }));
+      it('GET 204, Deletes an article when passed its id as a query', () => request
+        .delete('/api/articles/1')
+        .expect(204)
+        .then((res) => {
+          expect(res.body).to.eql({});
         }));
     });
   });

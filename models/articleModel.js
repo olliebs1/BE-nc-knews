@@ -39,7 +39,14 @@ const patchArticleById = (article_id, inc_votes) => connection
   .increment('votes', inc_votes)
   .returning('*');
 
+const deleteArticle = article_id => connection
+  .select('*')
+  .from('articles')
+  .where({
+    'articles.article_id': article_id,
+  }).del();
+
 
 module.exports = {
-  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById,
+  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle,
 };
