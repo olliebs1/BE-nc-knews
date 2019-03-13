@@ -10,26 +10,35 @@ const fetchAllArticles = (authorConditions, topicCondition, createdCondition, so
   .leftJoin('comments', 'articles.article_id', 'comments.article_id')
   .groupBy('articles.article_id')
   .count('comments.comment_id as comment_count')
-  .orderBy(sort_by || 'articles.created_at', order || 'desc')
-  .returning('*');
+  .orderBy(sort_by || 'articles.created_at', order || 'desc');
+
 
 const insertArticle = newArticle => connection
   .insert(newArticle)
   .into('articles')
   .returning('*');
 
-module.exports = { fetchAllArticles, insertArticle };
+
+const fetchArticlesById = article_id => connection
+  .select('articles.article_id', 'articles.title', 'articles.body', 'articles.votes', 'articles.topic', 'articles.author', 'articles.created_at')
+  .from('articles')
+  .where({
+    'articles.article_id': article_id,
+  })
+  .leftJoin('comments', 'articles.article_id', 'comments.article_id')
+  .groupBy('articles.article_id')
+  .count('comments.comment_id as comment_count');
 
 
-// const getAllTreasures = (limit, order, conditions, between) => {
-//   return connection.select('treasure_id', 'treasure_name', 'colour', 'age', 'shop_name')
-//     .from('treasures')
-//     .where(conditions)
-//     .whereBetween('age', between.age)
-//     .whereBetween('cost_at_auction', between.cost_at_auction)
-//     .leftJoin('shops', 'treasures.shop_id', 'shops.shop_id')
-//     .groupBy('treasures.treasure_id', 'shops.shop_name')
-//     .limit(limit || 25)
-//     .orderBy(order || 'cost_at_auction', 'asc');
+const patchArticleById = (article_id, data) => console.log('inside model') || connection
+  .select('articles.article_id', 'articles.title', 'articles.body', 'articles.votes', 'articles.topic', 'articles.author', 'articles.created_at')
+  .from('articles')
+  .where({ article_id })
+  .update(data, ['article_id'])
+  .returning('*');
 
-// }
+
+
+module.exports = {
+  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById,
+};

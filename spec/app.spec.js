@@ -79,8 +79,7 @@ describe('/', () => {
         .get('/api/articles?sort_by=comment_count&&order=asc')
         .expect(200)
         .then((res) => {
-          console.log(res.body)
-          expect(res.body.articles[0].article_id).to.equal(1);
+          expect(res.body.articles[0].article_id).to.equal(11);
         }));
     });
   });
@@ -98,5 +97,36 @@ describe('/', () => {
         expect(res.body.articles).to.be.an('object');
         expect(res.body.articles).to.contain.keys('article_id', 'title', 'body', 'created_at', 'topic', 'author', 'votes');
       }));
+    describe('/:article_id', () => {
+      const data = {
+        inc_votes: 1,
+      };
+      it('GET 200, Returns an article by its ID when passed an id into the parameters', () => request
+        .get('/api/articles/1')
+        .expect(200)
+        .then((res) => {
+          expect(res.body.article[0].article_id).to.equal(1);
+        }));
+      it('GET 200, Returns an article by its ID when passed an id into the parameters', () => request
+        .get('/api/articles/5')
+        .expect(200)
+        .then((res) => {
+          expect(res.body.article[0].article_id).to.equal(5);
+        }));
+      it('GET 200, Returns an article by its ID when passed an if into the parameters returning comment_count as a key', () => request
+        .get('/api/articles/6')
+        .expect(200)
+        .then((res) => {
+          expect(res.body.article[0]).to.contain.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at', 'comment_count');
+        }));
+      it('PATCH, returns status:202, and increments vote of article by 1 when passed a newVote with the value of 1', () =>
+        request
+          .get('/api/articles/5')
+          .expect(202)
+          .then((res) => {
+            console.log(res.body.articles);
+          }));
+
+    });
   });
 });
