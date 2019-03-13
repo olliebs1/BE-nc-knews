@@ -98,9 +98,6 @@ describe('/', () => {
         expect(res.body.articles).to.contain.keys('article_id', 'title', 'body', 'created_at', 'topic', 'author', 'votes');
       }));
     describe('/:article_id', () => {
-      const data = {
-        inc_votes: 1,
-      };
       it('GET 200, Returns an article by its ID when passed an id into the parameters', () => request
         .get('/api/articles/1')
         .expect(200)
@@ -119,14 +116,16 @@ describe('/', () => {
         .then((res) => {
           expect(res.body.article[0]).to.contain.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at', 'comment_count');
         }));
-      it('PATCH, returns status:202, and increments vote of article by 1 when passed a newVote with the value of 1', () =>
-        request
-          .get('/api/articles/5')
-          .expect(202)
-          .then((res) => {
-            console.log(res.body.articles);
-          }));
-
+      it.only('PATCH, returns status:202, and increments vote of article by 1 when passed a newVote with the value of 1', () => request
+        .patch('/api/articles/1')
+        .send({
+          inc_votes: 1,
+        })
+        .expect(202)
+        .then((res) => {
+          expect(res.body.updatedArticle[0]).to.be.an('object');
+          expect(res.body.updatedArticle[0].votes).to.eql(101);
+        }));
     });
   });
 });

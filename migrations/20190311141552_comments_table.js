@@ -7,6 +7,7 @@ exports.up = function (knex, Promise) {
     commentsTable.integer('votes' || 0).notNullable();
     commentsTable.string('body', 100000).notNullable();
     commentsTable.timestamp('created_at');
+
   });
 };
 

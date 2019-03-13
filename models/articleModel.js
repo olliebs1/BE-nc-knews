@@ -30,13 +30,14 @@ const fetchArticlesById = article_id => connection
   .count('comments.comment_id as comment_count');
 
 
-const patchArticleById = (article_id, data) => console.log('inside model') || connection
-  .select('articles.article_id', 'articles.title', 'articles.body', 'articles.votes', 'articles.topic', 'articles.author', 'articles.created_at')
+const patchArticleById = (article_id, inc_votes) => connection
+  .select('*')
   .from('articles')
-  .where({ article_id })
-  .update(data, ['article_id'])
+  .where({
+    'articles.article_id': article_id,
+  })
+  .increment('votes', inc_votes)
   .returning('*');
-
 
 
 module.exports = {

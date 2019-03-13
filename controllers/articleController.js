@@ -43,12 +43,14 @@ const getArticleById = (req, res, next) => {
 };
 
 const patchArticle = (req, res, next) => {
-  console.log('in here')
   const { article_id } = req.params;
-  patchArticleById(article_id, data)
+  const { inc_votes } = req.body;
+
+  patchArticleById(article_id, inc_votes)
     .then((updatedArticle) => {
-      console.log(updatedArticle);
-      res.status(202).send({ inc_votes: updatedArticle });
+      res.status(202).send({ updatedArticle });
+    }).catch((err) => {
+      console.log(err);
     });
 };
 
