@@ -1,5 +1,5 @@
 const {
-  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId,
+  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId, insertComment,
 } = require('../models/articleModel');
 
 
@@ -72,15 +72,17 @@ const getCommentsByArticleId = (req, res, next) => {
 };
 
 
-// const postCommentByArticleId = (req, res, next) => {
-//   const { username, body } = req.body;
-//   const { article_id } = req.params;
-//   insertComment(username, body, article_id)
-//     .then((comment) => {
-//       res.status(201).send({ comment });
-//     });
-// };
+const postCommentByArticleId = (req, res, next) => {
+  const { author, body, votes } = req.body;
+  const { article_id } = req.params;
+  const comment = { author, body, votes };
+
+  insertComment(comment, article_id)
+    .then(([comment]) => {
+      res.status(201).send({ comment });
+    });
+};
 
 module.exports = {
-  getArticles, postArticles, getArticleById, patchArticle, removeArticle, getCommentsByArticleId,
+  getArticles, postArticles, getArticleById, patchArticle, removeArticle, getCommentsByArticleId, postCommentByArticleId,
 };

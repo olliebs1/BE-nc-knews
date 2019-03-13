@@ -56,14 +56,12 @@ const fetchCommentsByArticleId = (article_id, sort_by, order) => connection
   .orderBy(sort_by || 'comments.created_at', order || 'desc');
 
 
-// const insertComment = (username, body, article_id) => connection
-//   .insert(username, body)
-//   .into('comment.body')
-//   .where({
-//     'comments.article_id': article_id,
-//   })
-//   .returning('*');
+const insertComment = (comment, article_id) => connection
+  .insert(comment)
+  .into('comments')
+  .where({ 'comments.article_id': article_id })
+  .returning('*');
 
 module.exports = {
-  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId,
+  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId, insertComment,
 };

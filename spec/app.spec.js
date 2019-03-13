@@ -154,14 +154,13 @@ describe('/', () => {
           expect(res.body.comments[0].comment_id).to.eql(18);
           expect(res.body).to.be.an('object');
         }));
-      xit('POST returns status 201, and returns the new comment as it appears in the database', () => request
+      it('POST returns status 201, and returns the new comment as it appears in the database', () => request
         .post('/api/articles/1/comments')
-        .send({ username: 'butter_bridge', body: 'What a brilliant comment' })
+        .send({ author: 'butter_bridge', body: 'What a brilliant comment', votes: 0 })
         .expect(201)
         .then((res) => {
-          console.log(res.body);
-          expect(res.body.articles).to.be.an('object');
-          expect(res.body.articles).to.contain.keys('username', 'body');
+          expect(res.body.comment).to.be.an('object');
+          expect(res.body.comment).to.contain.keys('comment_id', 'body', 'votes', 'author', 'article_id', 'created_at');
         }));
     });
   });
