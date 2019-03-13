@@ -1,4 +1,5 @@
 \c nc_knews
 
-SELECT * FROM articles
-JOIN comments ON comments.article_id = articles.article_id;
+SELECT comments FROM articles
+JOIN comments ON comments.article_id = articles.article_id
+WHERE articles.article_id = 16;

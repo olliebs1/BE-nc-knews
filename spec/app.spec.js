@@ -130,7 +130,38 @@ describe('/', () => {
         .delete('/api/articles/1')
         .expect(204)
         .then((res) => {
+          expect(res.status).to.eql(204);
           expect(res.body).to.eql({});
+        }));
+    });
+    describe('/:article_id/comments', () => {
+      it('GET returns status: 200 and returns all the comments by article_id', () => request
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((res) => {
+          expect(res.body).to.be.an('object');
+        }));
+      it('GET returns status: 200 and returns all the comments by article_id', () => request
+        .get('/api/articles/6/comments')
+        .expect(200)
+        .then((res) => {
+          expect(res.body).to.be.an('object');
+        }));
+      it('GET returns status: 200 and returns all the comments by article_id which has been sorted a specified column and defaults to desc order', () => request
+        .get('/api/articles/1/comments?sort_by=comment_id')
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comments[0].comment_id).to.eql(18);
+          expect(res.body).to.be.an('object');
+        }));
+      xit('POST returns status 201, and returns the new comment as it appears in the database', () => request
+        .post('/api/articles/1/comments')
+        .send({ username: 'butter_bridge', body: 'What a brilliant comment' })
+        .expect(201)
+        .then((res) => {
+          console.log(res.body);
+          expect(res.body.articles).to.be.an('object');
+          expect(res.body.articles).to.contain.keys('username', 'body');
         }));
     });
   });

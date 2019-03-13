@@ -13,8 +13,8 @@ const fetchAllArticles = (authorConditions, topicCondition, createdCondition, so
   .orderBy(sort_by || 'articles.created_at', order || 'desc');
 
 
-const insertArticle = newArticle => connection
-  .insert(newArticle)
+const insertArticle = articlePost => connection
+  .insert(articlePost)
   .into('articles')
   .returning('*');
 
@@ -47,6 +47,23 @@ const deleteArticle = article_id => connection
   }).del();
 
 
+const fetchCommentsByArticleId = (article_id, sort_by, order) => connection
+  .select('comment_id', 'votes', 'created_at', 'author', 'body')
+  .from('comments')
+  .where({
+    'comments.article_id': article_id,
+  })
+  .orderBy(sort_by || 'comments.created_at', order || 'desc');
+
+
+// const insertComment = (username, body, article_id) => connection
+//   .insert(username, body)
+//   .into('comment.body')
+//   .where({
+//     'comments.article_id': article_id,
+//   })
+//   .returning('*');
+
 module.exports = {
-  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle,
+  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId,
 };

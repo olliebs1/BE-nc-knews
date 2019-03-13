@@ -1,5 +1,5 @@
 const {
-  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle,
+  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId,
 } = require('../models/articleModel');
 
 
@@ -62,6 +62,25 @@ const removeArticle = (req, res, next) => {
     });
 };
 
+const getCommentsByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const { sort_by, order } = req.query;
+  fetchCommentsByArticleId(article_id, sort_by, order)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    });
+};
+
+
+// const postCommentByArticleId = (req, res, next) => {
+//   const { username, body } = req.body;
+//   const { article_id } = req.params;
+//   insertComment(username, body, article_id)
+//     .then((comment) => {
+//       res.status(201).send({ comment });
+//     });
+// };
+
 module.exports = {
-  getArticles, postArticles, getArticleById, patchArticle, removeArticle,
+  getArticles, postArticles, getArticleById, patchArticle, removeArticle, getCommentsByArticleId,
 };
