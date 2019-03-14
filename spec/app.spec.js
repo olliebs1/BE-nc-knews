@@ -164,4 +164,13 @@ describe('/', () => {
         }));
     });
   });
-});
+  describe('/comments/:comment_id', () => {
+    it('PATCH, returns status: 202, and increments vote of comment by 1 when passed a newVote with the value of 1', () => request
+      .patch('/api/comments/3')
+      .send({ inc_votes: 1 })
+      .expect(202)
+        expect()
+        expect(res.body.updatedComment).to.be.an('object');
+  };
+}));
+  });

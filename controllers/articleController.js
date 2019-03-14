@@ -1,5 +1,5 @@
 const {
-  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId, insertComment,
+  fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId, insertComment, patchCommentById,
 } = require('../models/articleModel');
 
 
@@ -82,6 +82,7 @@ const postCommentByArticleId = (req, res, next) => {
       res.status(201).send({ comment });
     });
 };
+
 
 module.exports = {
   getArticles, postArticles, getArticleById, patchArticle, removeArticle, getCommentsByArticleId, postCommentByArticleId,

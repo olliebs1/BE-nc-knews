@@ -62,6 +62,7 @@ const insertComment = (comment, article_id) => connection
   .where({ 'comments.article_id': article_id })
   .returning('*');
 
+
 module.exports = {
   fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId, insertComment,
 };
