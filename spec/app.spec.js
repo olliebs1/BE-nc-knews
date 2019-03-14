@@ -239,12 +239,38 @@ describe('/', () => {
         .then(({ body }) => {
           expect(body.msg).to.equal('Error: Bad Request');
         }));
-      it('GET 204, Deletes an article when passed its id as a query', () => request
+      it('PATCH, returns an error 422 when req.body is passed more than one property', () => request
+        .patch('/api/articles/1')
+        .send({ inc_votes: 1, teapots: 1 })
+        .expect(422)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Unprocessible Entity');
+        }));
+      it('PATCH, returns an error 400 when inc_votes isnt passed an integer as its key value pair', () => request
+        .patch('/api/articles/1')
+        .send({ inc_votes: 'cat' })
+        .expect(422)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Unprocessible Entity');
+        }));
+      it('DELETE status 204, Deletes an article when passed its id as a query', () => request
         .delete('/api/articles/1')
         .expect(204)
         .then((res) => {
           expect(res.status).to.eql(204);
           expect(res.body).to.eql({});
+        }));
+      it('DELETE method returns error 400 when deleting an article and passed an invalid id', () => request
+        .delete('/api/articles/121')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request')
+        }));
+      it('DELETE method returns error 400 when deleting an article and passed an id that isnt an integer', () => request
+        .delete('/api/articles/cat')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request')
         }));
     });
     describe('/:article_id/comments', () => {

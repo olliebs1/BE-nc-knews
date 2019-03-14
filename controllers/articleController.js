@@ -63,25 +63,37 @@ const getArticleById = (req, res, next) => {
 const patchArticle = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
+  const values = Object.values(req.body)
   const keys = Object.keys(req.body);
-  if (keys[0] != 'inc_votes' && keys[0] !== undefined) {
-    next(res.status(400).send({ msg: 'Error: Bad Request' }));
-  } else {
-    patchArticleById(article_id, inc_votes)
-      .then((updatedArticle) => {
-        res.status(202).send({ updatedArticle });
-      }).catch((err) => {
-        next(err);
-      });
-  }
-};
+  if (req.body > 1) {
+    next(res.status(422).send({ msg: 'Error: Unprocessible Entity' }))
+  } else
+    if (keys[0] != 'inc_votes' && keys[0] !== undefined) {
+      next(res.status(400).send({ msg: 'Error: Bad Request' }));
+    } else if (values !== Number) {
+      next(res.status(422).send({ msg: 'Error: Unprocessible Entity' }))
+    } else
+      patchArticleById(article_id, inc_votes)
+        .then((updatedArticle) => {
+          res.status(202).send({ updatedArticle });
+        }).catch((err) => {
+          next(err);
+        });
+}
+
 
 const removeArticle = (req, res, next) => {
   const { article_id } = req.params;
-  deleteArticle(article_id)
-    .then(() => {
-      res.status(204).send({});
-    });
+
+  if (article_id !== Number && article_id > 100) {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }))
+  } else
+    deleteArticle(article_id)
+      .then(() => {
+        res.status(204).send({});
+      }).catch(err => {
+        next(err)
+      })
 };
 
 const getCommentsByArticleId = (req, res, next) => {
