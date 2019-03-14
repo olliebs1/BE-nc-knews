@@ -183,6 +183,11 @@ describe('/', () => {
       }));
   });
   describe('/users', () => {
+    const userPost = {
+      username: 'ollie1234',
+      avatar_url: 'www.google.co.uk',
+      name: 'ollie',
+    };
     it('GET, returns status 200: and returns all users containing keys - username, avatar_url, name', () => request
       .get('/api/users')
       .expect(200)
@@ -190,6 +195,20 @@ describe('/', () => {
         expect(res.status).to.eql(200);
         expect(res.body.users).to.be.an('array');
         expect(res.body.users[0]).to.contain.keys('username', 'avatar_url', 'name');
+      }));
+    it('POSTS status 201, returns the new topic as it appears in the database', () => request.post('/api/users')
+      .send(userPost)
+      .expect(201)
+      .then((res) => {
+        expect(res.body.user).to.be.an('object');
+        expect(res.body.user).to.contain.keys('username', 'avatar_url', 'name');
+      }));
+    it('GET 200, Returns a user by its username when passed an id into the parameters', () => request
+      .get('/api/users/icellusedkars')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.user).to.be.an('object');
+        expect(res.body.user).to.contain.keys('username', 'avatar_url', 'name');
       }));
   });
 });

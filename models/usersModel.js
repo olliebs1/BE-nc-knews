@@ -6,8 +6,16 @@ const fetchUsers = () => connection
   .from('users');
 
 
-const createUser = () => connection
-  .insert
+const createUser = userPost => connection
+  .insert(userPost)
+  .into('users')
+  .returning('*');
 
 
-module.exports = { fetchUsers, createUser };
+const fetchUserByUsername = username => connection
+  .from('users')
+  .where(username)
+  .returning('*');
+
+
+module.exports = { fetchUsers, createUser, fetchUserByUsername };
