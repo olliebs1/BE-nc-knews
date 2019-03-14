@@ -158,7 +158,32 @@ describe('/', () => {
     it('Returns a error status 400 for a post request for a an article that has missing keys', () => request
       .post('/api/articles')
       .send({
+
         topic: 'mitch',
+        body: 'This is the body',
+        author: 'icellusedkars',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Bad Request');
+      }));
+    it('Returns a error status 400 for a post request to a username that doesnt exist', () => request
+      .post('/api/articles')
+      .send({
+        title: 'This is the title',
+        topic: 'mitch',
+        body: 'This is the body',
+        author: 'diego',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Bad Request');
+      }));
+    it('Returns a error status 400 for a post request to a topic that doesnt exist', () => request
+      .post('/api/articles')
+      .send({
+        title: 'This is the title',
+        topic: 'Terry',
         body: 'This is the body',
         author: 'icellusedkars',
       })
@@ -172,6 +197,18 @@ describe('/', () => {
         .expect(200)
         .then((res) => {
           expect(res.body.article[0].article_id).to.equal(1);
+        }));
+      it('GET 200, Returns an article by its ID when passed an id into the parameters', () => request
+        .get('/api/articles/99999')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
+        }));
+      it('GET returns an error of 404 when passed an article_id that doesnt exist in the database', () => request
+        .get('/api/articles/dog')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
         }));
       it('GET 200, Returns an article by its ID when passed an id into the parameters', () => request
         .get('/api/articles/5')
@@ -194,6 +231,13 @@ describe('/', () => {
         .then((res) => {
           expect(res.body.updatedArticle[0]).to.be.an('object');
           expect(res.body.updatedArticle[0].votes).to.eql(101);
+        }));
+      it('PATCH, returns an error 400 when no inc_votes is passed into the req.body', () => request
+        .patch('/api/articles/1')
+        .send({ teaPot: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
         }));
       it('GET 204, Deletes an article when passed its id as a query', () => request
         .delete('/api/articles/1')

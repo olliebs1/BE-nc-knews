@@ -26,13 +26,13 @@ articlesRouter.route('/')
 articlesRouter.route('/:article_id')
   .get(getArticleById)
   .patch(patchArticle)
-  .delete(removeArticle);
-// .all(methodNotFound);
+  .delete(removeArticle)
+  .all(methodNotFound);
 
 articlesRouter.route('/:article_id/comments')
   .get(getCommentsByArticleId)
-  .post(postCommentByArticleId);
-// .all(methodNotFound);
+  .post(postCommentByArticleId)
+  .all(methodNotFound);
 
 
 module.exports = articlesRouter;

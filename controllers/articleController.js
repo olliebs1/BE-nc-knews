@@ -8,6 +8,7 @@ const {
 
 const getArticles = (req, res, next) => {
   const { sort_by, order = 'desc' } = req.query;
+  // const values = Object.values(req.query);
   let authorConditions = {};
   let topicCondition = {};
   let createdCondition = {};
@@ -36,6 +37,7 @@ const getArticles = (req, res, next) => {
 
 const postArticles = (req, res, next) => {
   const articleToPost = req.body;
+  const article_id = req.params;
   insertArticle(articleToPost)
     .then(([articles]) => {
       res.status(201).send({ articles });
@@ -46,22 +48,32 @@ const postArticles = (req, res, next) => {
 
 const getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  fetchArticlesById(article_id)
-    .then((article) => {
-      res.status(200).send({ article });
-    });
+  if (article_id !== Number && article_id > 100) {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }));
+  } else {
+    fetchArticlesById(article_id)
+      .then((article) => {
+        res.status(200).send({ article });
+      }).catch((err) => {
+        next(err);
+      });
+  }
 };
 
 const patchArticle = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
+  const keys = Object.keys(req.body)
+  if (keys[0] != inc_votes && keys[0] !== undefined) {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }))
+  } else
+    patchArticleById(article_id, inc_votes)
+      .then((updatedArticle) => {
+        res.status(202).send({ updatedArticle });
+      }).catch((err) => {
+        next(err);
+      });
 
-  patchArticleById(article_id, inc_votes)
-    .then((updatedArticle) => {
-      res.status(202).send({ updatedArticle });
-    }).catch((err) => {
-      console.log(err);
-    });
 };
 
 const removeArticle = (req, res, next) => {
