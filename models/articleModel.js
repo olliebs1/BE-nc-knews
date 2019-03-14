@@ -10,7 +10,7 @@ const fetchAllArticles = (authorConditions, topicCondition, createdCondition, so
   .leftJoin('comments', 'articles.article_id', 'comments.article_id')
   .groupBy('articles.article_id')
   .count('comments.comment_id as comment_count')
-  .orderBy(sort_by || 'articles.created_at', order || 'desc');
+  .orderBy(sort_by || 'articles.created_at', order || 'asc');
 
 
 const insertArticle = articlePost => connection

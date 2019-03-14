@@ -99,10 +99,9 @@ describe('/', () => {
         expect(body.msg).to.equal('Error: Bad Request');
       }));
     it('Error Bad Query, Returns an error 400 when order isnt asc or desc', () => request
-      .get('/api/articles?order=1')
+      .get('/api/articles?order=hello')
       .expect(400)
       .then(({ body }) => {
-        console.log(body)
         expect(body.msg).to.equal('Error: Bad Request');
       }));
     it('GET 200, Returns all an object filtered by topic', () => request
@@ -110,6 +109,12 @@ describe('/', () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles).to.have.lengthOf(1);
+      }));
+    it('Returns a error status 404 for a get request for a topic that doesnt exist', () => request
+      .get('/api/topic=bollywood')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Route Not Found');
       }));
     it('GET 200, Returns all an object sorted by date by default', () => request
       .get('/api/articles')
@@ -149,6 +154,17 @@ describe('/', () => {
       .then((res) => {
         expect(res.body.articles).to.be.an('object');
         expect(res.body.articles).to.contain.keys('article_id', 'title', 'body', 'created_at', 'topic', 'author', 'votes');
+      }));
+    it('Returns a error status 400 for a post request for a an article that has missing keys', () => request
+      .post('/api/articles')
+      .send({
+        topic: 'mitch',
+        body: 'This is the body',
+        author: 'icellusedkars',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Bad Request');
       }));
     describe('/:article_id', () => {
       it('GET 200, Returns an article by its ID when passed an id into the parameters', () => request
@@ -256,12 +272,24 @@ describe('/', () => {
         expect(res.body.user).to.be.an('object');
         expect(res.body.user).to.contain.keys('username', 'avatar_url', 'name');
       }));
-    it('GET 200, Returns a user by its username when passed an id into the parameters', () => request
+    xit('Returns a error status 404 for a get request for a author that doesnt exist', () => request
+      .get('/api/author=ollie1234')
+      .expect(200)
+      .then((res) => {
+        expect(res.body).to.equal('here');
+      }));
+    it('GET 200, Returns a user by its username when passed a username into the parameters', () => request
       .get('/api/users/icellusedkars')
       .expect(200)
       .then((res) => {
         expect(res.body.user).to.be.an('object');
         expect(res.body.user).to.contain.keys('username', 'avatar_url', 'name');
+      }));
+    it('Returns a error status 404 for a get request for a author that doesnt exist', () => request
+      .get('/api/username=treacle')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Route Not Found');
       }));
   });
 });

@@ -10,7 +10,6 @@ const error400 = (err, req, res, next) => {
 
 const routeNotFound = (req, res, next) => {
   res.status(404).send({ msg: 'Error: Route Not Found' });
-  next(err);
 };
 
 

@@ -1,14 +1,16 @@
 const {
   fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId, insertComment, patchCommentById,
 } = require('../models/articleModel');
+const {
+  error400, routeNotFound, methodNotFound, error422, error500,
+} = require('../errors/errors.js');
 
 
 const getArticles = (req, res, next) => {
-  const { sort_by, order } = req.query;
+  const { sort_by, order = 'desc' } = req.query;
   let authorConditions = {};
   let topicCondition = {};
   let createdCondition = {};
-
   Object.keys(req.query).forEach((key) => {
     if (key === 'author') {
       authorConditions = { 'articles.author': req.query[key] };
@@ -18,12 +20,18 @@ const getArticles = (req, res, next) => {
       createdCondition = { 'articles.created_at': req.query[key] };
     }
   });
-  fetchAllArticles(authorConditions, topicCondition, createdCondition, sort_by, order)
-    .then((articles) => {
-      res.status(200).send({ articles });
-    }).catch((err) => {
-      next(err);
-    });
+  if (req.query.order !== 'asc' && req.query.order !== 'desc' && req.query.order !== undefined) {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }));
+  } else {
+    fetchAllArticles(authorConditions, topicCondition, createdCondition, sort_by, order)
+
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
 };
 
 const postArticles = (req, res, next) => {
@@ -31,6 +39,8 @@ const postArticles = (req, res, next) => {
   insertArticle(articleToPost)
     .then(([articles]) => {
       res.status(201).send({ articles });
+    }).catch((err) => {
+      next(err);
     });
 };
 
