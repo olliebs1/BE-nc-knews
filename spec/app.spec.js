@@ -169,8 +169,17 @@ describe('/', () => {
       .patch('/api/comments/3')
       .send({ inc_votes: 1 })
       .expect(202)
-        expect()
+      .then((res) => {
+        expect(res.body.updatedComment).to.contain.keys('comment_id', 'author', 'article_id', 'votes', 'body', 'created_at');
         expect(res.body.updatedComment).to.be.an('object');
-  };
-}));
+        expect(res.body.updatedComment.votes).to.eql(101);
+      }));
+    it('DELETE, returns status 204, and deletes the comments when passed its comment ID', () => request
+      .delete('/api/comments/1')
+      .expect(204)
+      .then((res) => {
+        expect(res.status).to.eql(204);
+        expect(res.body).to.eql({});
+      }));
   });
+});

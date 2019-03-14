@@ -5,7 +5,7 @@ const patchComment = (req, res, next) => {
   const { comment_id } = req.params;
   const { inc_votes } = req.body;
   patchCommentById(comment_id, inc_votes)
-    .then((updatedComment) => {
+    .then(([updatedComment]) => {
       res.status(202).send({ updatedComment });
     });
 };
@@ -13,21 +13,10 @@ const patchComment = (req, res, next) => {
 const removeComment = (req, res, next) => {
   const { comment_id } = req.params;
   deleteComment(comment_id)
-    .then((res) => {
-      res.satus(204).send({})
-    })
-}
+    .then(() => {
+      res.status(204).send({});
+    });
+};
 
-
-
-
-
-// const removeArticle = (req, res, next) => {
-//   const { article_id } = req.params;
-//   deleteArticle(article_id)
-//     .then(() => {
-//       res.status(204).send({});
-//     });
-// };
 
 module.exports = { patchComment, removeComment };

@@ -13,7 +13,7 @@ const deleteComment = comment_id => connection
   .select('*')
   .from('comments')
   .where({
-    'comments.comment_id': comment_id
+    'comments.comment_id': comment_id,
   })
   .del();
 
