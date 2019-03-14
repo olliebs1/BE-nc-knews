@@ -63,17 +63,17 @@ const getArticleById = (req, res, next) => {
 const patchArticle = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
-  const keys = Object.keys(req.body)
-  if (keys[0] != inc_votes && keys[0] !== undefined) {
-    next(res.status(400).send({ msg: 'Error: Bad Request' }))
-  } else
+  const keys = Object.keys(req.body);
+  if (keys[0] != 'inc_votes' && keys[0] !== undefined) {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }));
+  } else {
     patchArticleById(article_id, inc_votes)
       .then((updatedArticle) => {
         res.status(202).send({ updatedArticle });
       }).catch((err) => {
         next(err);
       });
-
+  }
 };
 
 const removeArticle = (req, res, next) => {
