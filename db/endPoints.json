@@ -1,0 +1,17 @@
+{
+  "GET /api/topics": "A GET request that returns all topics",
+  "POST /api/topics": "A POST request which adds a post to the topics",
+  "GET /api/articles": "A GET request that returns all articles",
+  "POST /api/articles": "A POST request which adds a post to the articles",
+  "GET /api/articles/:article_id": "A GET request that returns a article by its id when passed an article_id",
+  "PATCH /api/articles/:article_id": "PATCH updates a specified article by its id when passed an article_id",
+  "DELETE /api/articles/:article_id": "DELETE deletes an article by its id when passed an article_id",
+  "GET /api/articles/:article_id/comments": "GET returns all comments from an article by the article_id when passed an article_id",
+  "POST /api/articles/:article_id/comments": "POST creates a new comment for an article defined by its article_id",
+  "PATCH /api/comments/:comment_id": "PATCH updates a comment by its comment id when passed a comment_id",
+  "DELETE /api/comments/:comment_id": "DELETE deletes a comment by its id when  passed its comment_id",
+  "GET /api/users": "GET returns ",
+  "POST /api/users": "POST creates a new user to the users table",
+  "GET /api/users/:username": "GET returns a user by its username",
+  "GET /api": "GET api, returns all the endpoints created on the api router"
+}

@@ -4,7 +4,7 @@ const articlesRouter = require('../routes/articlesRouter');
 const commentsRouter = require('../routes/commentsRouter');
 const usersRouter = require('../routes/usersRouter');
 
-
+// apiRouter.get('/', getEndPoints);
 apiRouter.use('/topics', topicRouter);
 apiRouter.use('/articles', articlesRouter);
 apiRouter.use('/comments', commentsRouter);
