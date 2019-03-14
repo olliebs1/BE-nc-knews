@@ -1,4 +1,7 @@
 const articlesRouter = require('express').Router();
+const {
+  error400, routeNotFound, methodNotFound, error422, error500,
+} = require('../errors/errors.js');
 
 
 const {
@@ -12,9 +15,13 @@ const {
 } = require('../controllers/articleController');
 
 
+articlesRouter.use('/bad-route', routeNotFound);
+
 articlesRouter.route('/')
   .get(getArticles)
-  .post(postArticles);
+  .post(postArticles)
+  .all(methodNotFound);
+
 
 articlesRouter.route('/:article_id')
   .get(getArticleById)

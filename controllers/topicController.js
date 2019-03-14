@@ -1,5 +1,7 @@
 const { fetchAllTopics, insertTopic } = require('../models/topicModel');
-
+const {
+  error400, RouteNotFound, methodNotFound, error422, error500,
+} = require('../errors/errors.js');
 
 const getAllTopics = (req, res, next) => {
   fetchAllTopics()
@@ -13,6 +15,9 @@ const postTopic = (req, res, next) => {
   insertTopic(topicToPost)
     .then(([topic]) => {
       res.status(201).send({ topic });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 

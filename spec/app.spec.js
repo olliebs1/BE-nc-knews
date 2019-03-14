@@ -32,56 +32,109 @@ describe('/', () => {
           expect(res.body.topic).to.be.an('object');
           expect(res.body.topic).to.contain.keys('slug', 'description');
         }));
-    });
-    describe('/articles', () => {
-      it('Returns a status 200 and all articles', () => request
-        .get('/api/articles')
-        .expect(200)
-        .then((res) => {
-          expect(res.body.articles).to.be.an('array');
-          expect(res.body.articles[0]).to.contain.keys('article_id', 'title', 'votes', 'topic', 'author', 'created_at', 'comment_count');
+      it('Returns an error code 422 when the insterted topic is already in the database', () => request
+        .post('/api/topics')
+        .send({
+          description: 'Not dogs',
+          slug: 'cats',
+        })
+        .expect(422)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Unprocessible Entity');
         }));
-      it('Returns a status: 200, and an object containing a comment_count as a key', () => request
-        .get('/api/articles')
-        .expect(200)
-        .then());
-      it('GET 200, Returns all an object filtered by authors', () => request
-        .get('/api/articles?author=icellusedkars')
-        .expect(200)
-        .then((res) => {
-          expect(res.body.articles).to.have.lengthOf(6);
+      it('Returns a error status 405', () => request
+        .patch('/api/topics')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Method Not Allowed');
         }));
-      it('GET 200, Returns all an object filtered by topic', () => request
-        .get('/api/articles?topic=cats')
-        .expect(200)
-        .then((res) => {
-          expect(res.body.articles).to.have.lengthOf(1);
-        }));
-      it('GET 200, Returns all an object sorted by date by default', () => request
-        .get('/api/articles')
-        .expect(200)
-        .then((res) => {
-          expect(res.body.articles[0].article_id).to.equal(1);
-        }));
-      it('GET 200, Returns an array of objects by a valid column by default in desc order', () => request
-        .get('/api/articles?sort_by=article_id')
-        .expect(200)
-        .then((res) => {
-          expect(res.body.articles[0].article_id).to.equal(12);
-        }));
-      it('GET 200, Returns all an object sorted by date by having column asc through a query', () => request
-        .get('/api/articles?sort_by=article_id&&order=asc')
-        .expect(200)
-        .then((res) => {
-          expect(res.body.articles[0].article_id).to.equal(1);
-        }));
-      it('GET 200, Returns all an object sorted by comment_count by having column asc through a query', () => request
-        .get('/api/articles?sort_by=comment_count&&order=asc')
-        .expect(200)
-        .then((res) => {
-          expect(res.body.articles[0].article_id).to.equal(11);
+      it('Returns an error code 400 when the insterted topic is missing fields', () => request
+        .post('/api/topics')
+        .send({ slug: 'New Slug' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
         }));
     });
+    describe('/api/jingleBells', () => {
+      it('Returns an error 404 when passed a bad route from the api', () => request
+        .get('/api/jingleBells')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Route Not Found');
+        }));
+    });
+    describe('/bad-route', () => {
+      it('Returns an error 404 when passed a bad route', () => request
+        .get('/bad-route')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Route Not Found');
+        }));
+    });
+  });
+  describe('/articles', () => {
+    it('Returns a status 200 and all articles', () => request
+      .get('/api/articles')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).to.be.an('array');
+        expect(res.body.articles[0]).to.contain.keys('article_id', 'title', 'votes', 'topic', 'author', 'created_at', 'comment_count');
+      }));
+
+    it('Returns a status: 200, and an object containing a comment_count as a key', () => request
+      .get('/api/articles')
+      .expect(200)
+      .then());
+    it('GET 200, Returns all an object filtered by authors', () => request
+      .get('/api/articles?author=icellusedkars')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).to.have.lengthOf(6);
+      }));
+    it('Error Bad Query, Returns an error 400 when passed an argument to sort by that doesnt exist', () => request
+      .get('/api/articles?sort_by=goliath')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Bad Request');
+      }));
+    it('Error Bad Query, Returns an error 400 when order isnt asc or desc', () => request
+      .get('/api/articles?order=1')
+      .expect(400)
+      .then(({ body }) => {
+        console.log(body)
+        expect(body.msg).to.equal('Error: Bad Request');
+      }));
+    it('GET 200, Returns all an object filtered by topic', () => request
+      .get('/api/articles?topic=cats')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).to.have.lengthOf(1);
+      }));
+    it('GET 200, Returns all an object sorted by date by default', () => request
+      .get('/api/articles')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles[0].article_id).to.equal(1);
+      }));
+    it('GET 200, Returns an array of objects by a valid column by default in desc order', () => request
+      .get('/api/articles?sort_by=article_id')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles[0].article_id).to.equal(12);
+      }));
+    it('GET 200, Returns all an object sorted by date by having column asc through a query', () => request
+      .get('/api/articles?sort_by=article_id&&order=asc')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles[0].article_id).to.equal(1);
+      }));
+    it('GET 200, Returns all an object sorted by comment_count by having column asc through a query', () => request
+      .get('/api/articles?sort_by=comment_count&&order=asc')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles[0].article_id).to.equal(11);
+      }));
   });
   describe('/articles', () => {
     const articlePost = {
