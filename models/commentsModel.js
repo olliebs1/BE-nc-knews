@@ -18,12 +18,4 @@ const deleteComment = comment_id => connection
   .del();
 
 
-// const deleteArticle = article_id => connection
-//   .select('*')
-//   .from('articles')
-//   .where({
-//     'articles.article_id': article_id,
-//   }).del();
-
-
 module.exports = { patchCommentById, deleteComment };

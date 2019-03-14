@@ -182,4 +182,14 @@ describe('/', () => {
         expect(res.body).to.eql({});
       }));
   });
+  describe('/users', () => {
+    it('GET, returns status 200: and returns all users containing keys - username, avatar_url, name', () => request
+      .get('/api/users')
+      .expect(200)
+      .then((res) => {
+        expect(res.status).to.eql(200);
+        expect(res.body.users).to.be.an('array');
+        expect(res.body.users[0]).to.contain.keys('username', 'avatar_url', 'name');
+      }));
+  });
 });
