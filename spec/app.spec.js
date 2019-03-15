@@ -332,9 +332,24 @@ describe('/', () => {
       .send({ inc_votes: 1 })
       .expect(202)
       .then((res) => {
+        console.log(res.body)
         expect(res.body.updatedComment).to.contain.keys('comment_id', 'author', 'article_id', 'votes', 'body', 'created_at');
         expect(res.body.updatedComment).to.be.an('object');
         expect(res.body.updatedComment.votes).to.eql(101);
+      }));
+    it('PATCH, returns an error 400 when no inc_votes is passed into the req.body', () => request
+      .patch('/api/comments/1')
+      .send({ teaPot: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Bad Request');
+      }));
+    it('PATCH, returns an error 400 when inc_votes isnt passed an integer as its key value pair', () => request
+      .patch('/api/comments/1')
+      .send({ inc_votes: 'cat' })
+      .expect(422)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Unprocessible Entity');
       }));
     it('DELETE, returns status 204, and deletes the comments when passed its comment ID', () => request
       .delete('/api/comments/1')
@@ -342,6 +357,18 @@ describe('/', () => {
       .then((res) => {
         expect(res.status).to.eql(204);
         expect(res.body).to.eql({});
+      }));
+    it('DELETE method returns error 400 when deleting a comment and passed an id that isnt an integer', () => request
+      .delete('/api/comments/cat')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Bad Request');
+      }));
+    it('DELETE method returns error 404 when deleting an article and passed an id that doesnt exist', () => request
+      .delete('/api/articles/123')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Route Not Found');
       }));
   });
   describe('/users', () => {
@@ -358,6 +385,12 @@ describe('/', () => {
         expect(res.body.users).to.be.an('array');
         expect(res.body.users[0]).to.contain.keys('username', 'avatar_url', 'name');
       }));
+    it('Error Bad Query, Returns an error 404 when given a bad path', () => request
+      .get('/api/user')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Route Not Found');
+      }));
     it('POSTS status 201, returns the new topic as it appears in the database', () => request.post('/api/users')
       .send(userPost)
       .expect(201)
@@ -365,11 +398,26 @@ describe('/', () => {
         expect(res.body.user).to.be.an('object');
         expect(res.body.user).to.contain.keys('username', 'avatar_url', 'name');
       }));
-    xit('Returns a error status 404 for a get request for a author that doesnt exist', () => request
-      .get('/api/author=ollie1234')
-      .expect(200)
-      .then((res) => {
-        expect(res.body).to.equal('here');
+    it('Returns an error code 422 when the insterted user is already in the database', () => request
+      .post('/api/users')
+      .send({
+        username: 'icellusedkars',
+        name: 'sam',
+        avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
+      })
+      .expect(422)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Unprocessible Entity');
+      }));
+    it('Returns an error code 400 when the insterted topic is missing fields', () => request
+      .post('/api/users')
+      .send({
+        username: 'icellusedkars',
+        avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Bad Request');
       }));
     it('GET 200, Returns a user by its username when passed a username into the parameters', () => request
       .get('/api/users/icellusedkars')
@@ -378,6 +426,12 @@ describe('/', () => {
         expect(res.body.user).to.be.an('object');
         expect(res.body.user).to.contain.keys('username', 'avatar_url', 'name');
       }));
+    it('GET request, Returns an error 400 by when passed an invalid integer', () => request
+      .get('/api/users/99999')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Route Not Found');
+      }))
     it('Returns a error status 404 for a get request for a author that doesnt exist', () => request
       .get('/api/username=treacle')
       .expect(404)

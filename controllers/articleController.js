@@ -69,14 +69,14 @@ const patchArticle = (req, res, next) => {
     next(res.status(400).send({ msg: 'Error: Bad Request' }));
   } else if (values !== Number) {
     next(res.status(422).send({ msg: 'Error: Unprocessible Entity' }));
-  } else if (keys === inc_votes) {
+  } else
     patchArticleById(article_id, inc_votes)
       .then((updatedArticle) => {
+        console.log(updatedArticle)
         res.status(202).send({ updatedArticle });
       }).catch((err) => {
         next(err);
       });
-  }
 };
 
 
