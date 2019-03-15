@@ -1,14 +1,10 @@
 const {
   fetchAllArticles, insertArticle, fetchArticlesById, patchArticleById, deleteArticle, fetchCommentsByArticleId, insertComment, patchCommentById,
 } = require('../models/articleModel');
-const {
-  error400, routeNotFound, methodNotFound, error422, error500,
-} = require('../errors/errors.js');
 
 
 const getArticles = (req, res, next) => {
   const { sort_by, order = 'desc' } = req.query;
-  // const values = Object.values(req.query);
   let authorConditions = {};
   let topicCondition = {};
   let createdCondition = {};
@@ -48,12 +44,16 @@ const postArticles = (req, res, next) => {
 
 const getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  if (article_id !== Number && article_id > 100) {
+  if (typeof (Number(article_id)) !== 'number') {
     next(res.status(400).send({ msg: 'Error: Bad Request' }));
   } else {
     fetchArticlesById(article_id)
       .then((article) => {
-        res.status(200).send({ article });
+        if (article.length === 0) {
+          next(res.status(404).send({ msg: 'Error: Route Not Found' }));
+        } else {
+          res.status(200).send({ article });
+        }
       }).catch((err) => {
         next(err);
       });
@@ -63,46 +63,56 @@ const getArticleById = (req, res, next) => {
 const patchArticle = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
-  const values = Object.values(req.body)
+  const values = Object.values(req.body);
   const keys = Object.keys(req.body);
-  if (req.body > 1) {
-    next(res.status(422).send({ msg: 'Error: Unprocessible Entity' }))
-  } else
-    if (keys[0] != 'inc_votes' && keys[0] !== undefined) {
-      next(res.status(400).send({ msg: 'Error: Bad Request' }));
-    } else if (values !== Number) {
-      next(res.status(422).send({ msg: 'Error: Unprocessible Entity' }))
-    } else
-      patchArticleById(article_id, inc_votes)
-        .then((updatedArticle) => {
-          res.status(202).send({ updatedArticle });
-        }).catch((err) => {
-          next(err);
-        });
-}
+  if (inc_votes === undefined) {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }));
+  } else if (values !== Number) {
+    next(res.status(422).send({ msg: 'Error: Unprocessible Entity' }));
+  } else if (keys === inc_votes) {
+    patchArticleById(article_id, inc_votes)
+      .then((updatedArticle) => {
+        res.status(202).send({ updatedArticle });
+      }).catch((err) => {
+        next(err);
+      });
+  }
+};
 
 
 const removeArticle = (req, res, next) => {
   const { article_id } = req.params;
-
-  if (article_id !== Number && article_id > 100) {
-    next(res.status(400).send({ msg: 'Error: Bad Request' }))
-  } else
+  const integer = parseInt(article_id);
+  if (typeof (Number(article_id)) !== 'number') {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }));
+  } else if (isNaN(integer)) {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }));
+  } else {
     deleteArticle(article_id)
-      .then(() => {
-        res.status(204).send({});
-      }).catch(err => {
-        next(err)
-      })
+      .then((deleteCount) => {
+        if (deleteCount === 0) {
+          next(res.status(404).send({ msg: 'Error: Route Not Found' }));
+        } else res.sendStatus(204);
+      }).catch((err) => {
+        next(err);
+      });
+  }
 };
 
 const getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by, order } = req.query;
-  fetchCommentsByArticleId(article_id, sort_by, order)
-    .then((comments) => {
-      res.status(200).send({ comments });
-    });
+  const integer = parseInt(article_id);
+  if (isNaN(integer)) {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }));
+  } else {
+    fetchCommentsByArticleId(integer, sort_by, order)
+      .then((comments) => {
+        res.status(200).send({ comments });
+      }).catch((err) => {
+        next(err);
+      });
+  }
 };
 
 
@@ -110,11 +120,17 @@ const postCommentByArticleId = (req, res, next) => {
   const { author, body, votes } = req.body;
   const { article_id } = req.params;
   const comment = { author, body, votes };
-
-  insertComment(comment, article_id)
-    .then(([comment]) => {
-      res.status(201).send({ comment });
-    });
+  const integer = parseInt(article_id)
+  if (isNaN(integer) || integer > 100) {
+    next(res.status(400).send({ msg: 'Error: Bad Request' }));
+  } else {
+    insertComment(comment, article_id)
+      .then(([comment]) => {
+        res.status(201).send({ comment });
+      }).catch((err) => {
+        next(err);
+      });
+  }
 };
 
 

@@ -198,11 +198,11 @@ describe('/', () => {
         .then((res) => {
           expect(res.body.article[0].article_id).to.equal(1);
         }));
-      it('GET 200, Returns an article by its ID when passed an id into the parameters', () => request
+      it('GET request, Returns an error 400 by when passed an invalid integer', () => request
         .get('/api/articles/99999')
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal('Error: Bad Request');
+          expect(body.msg).to.equal('Error: Route Not Found');
         }));
       it('GET returns an error of 404 when passed an article_id that doesnt exist in the database', () => request
         .get('/api/articles/dog')
@@ -255,22 +255,18 @@ describe('/', () => {
         }));
       it('DELETE status 204, Deletes an article when passed its id as a query', () => request
         .delete('/api/articles/1')
-        .expect(204)
-        .then((res) => {
-          expect(res.status).to.eql(204);
-          expect(res.body).to.eql({});
-        }));
-      it('DELETE method returns error 400 when deleting an article and passed an invalid id', () => request
-        .delete('/api/articles/121')
-        .expect(400)
+        .expect(204));
+      it('DELETE method returns error 404 when deleting an article and passed an id that doesnt exist', () => request
+        .delete('/api/articles/123')
+        .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal('Error: Bad Request')
+          expect(body.msg).to.equal('Error: Route Not Found');
         }));
       it('DELETE method returns error 400 when deleting an article and passed an id that isnt an integer', () => request
         .delete('/api/articles/cat')
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.equal('Error: Bad Request')
+          expect(body.msg).to.equal('Error: Bad Request');
         }));
     });
     describe('/:article_id/comments', () => {
@@ -279,6 +275,12 @@ describe('/', () => {
         .expect(200)
         .then((res) => {
           expect(res.body).to.be.an('object');
+        }));
+      it('GET request, Returns an error 400 when passed an invalid integer', () => request
+        .get('/api/articles/dog/comments')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
         }));
       it('GET returns status: 200 and returns all the comments by article_id', () => request
         .get('/api/articles/6/comments')
@@ -300,6 +302,27 @@ describe('/', () => {
         .then((res) => {
           expect(res.body.comment).to.be.an('object');
           expect(res.body.comment).to.contain.keys('comment_id', 'body', 'votes', 'author', 'article_id', 'created_at');
+        }));
+      it('Returns a error status 400 for a post method for a comment that has missing keys', () => request
+        .post('/api/articles/1/comments')
+        .send({ author: 'butter_bridge', body: 'What a brilliant comment' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
+        }));
+      it('Returns a error status 400 for a post method for a comment when the article_id that isnt an integer', () => request
+        .post('/api/articles/dog/comments')
+        .send({ author: 'butter_bridge', body: 'What a brilliant comment', votes: 0 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
+        }));
+      it('Returns a error status 400 for a post method for a comment when the article_id that doesnt exist', () => request
+        .post('/api/articles/1234/comments')
+        .send({ author: 'butter_bridge', body: 'What a brilliant comment', votes: 0 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
         }));
     });
   });

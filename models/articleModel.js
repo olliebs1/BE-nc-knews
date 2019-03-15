@@ -47,11 +47,11 @@ const deleteArticle = article_id => connection
   }).del();
 
 
-const fetchCommentsByArticleId = (article_id, sort_by, order) => connection
+const fetchCommentsByArticleId = (integer, sort_by, order) => connection
   .select('comment_id', 'votes', 'created_at', 'author', 'body')
   .from('comments')
   .where({
-    'comments.article_id': article_id,
+    'comments.article_id': integer,
   })
   .orderBy(sort_by || 'comments.created_at', order || 'desc');
 
