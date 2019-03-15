@@ -8,10 +8,10 @@ const { getUsers, postUser, getUserByUsername } = require('../controllers/usersC
 usersRouter.route('/')
   .get(getUsers)
   .post(postUser)
-  .all(methodNotFound)
+  .all(methodNotFound);
 
 usersRouter.route('/:username')
   .get(getUserByUsername)
-  .all(methodNotFound)
+  .all(methodNotFound);
 
 module.exports = usersRouter;

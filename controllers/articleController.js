@@ -69,14 +69,14 @@ const patchArticle = (req, res, next) => {
     next(res.status(400).send({ msg: 'Error: Bad Request' }));
   } else if (values !== Number) {
     next(res.status(422).send({ msg: 'Error: Unprocessible Entity' }));
-  } else
+  } else {
     patchArticleById(article_id, inc_votes)
       .then((updatedArticle) => {
-        console.log(updatedArticle)
         res.status(202).send({ updatedArticle });
       }).catch((err) => {
         next(err);
       });
+  }
 };
 
 
@@ -108,10 +108,14 @@ const getCommentsByArticleId = (req, res, next) => {
   } else {
     fetchCommentsByArticleId(integer, sort_by, order)
       .then((comments) => {
-        res.status(200).send({ comments });
-      }).catch((err) => {
-        next(err);
-      });
+        if (comments.length === 0) {
+          next(res.status(400).send({ msg: 'Error: Bad Request' }));
+        } else {
+          res.status(200).send({ comments });
+        }
+      }).catch(err => {
+        next(err)
+      })
   }
 };
 
@@ -120,7 +124,7 @@ const postCommentByArticleId = (req, res, next) => {
   const { author, body, votes } = req.body;
   const { article_id } = req.params;
   const comment = { author, body, votes };
-  const integer = parseInt(article_id)
+  const integer = parseInt(article_id);
   if (isNaN(integer) || integer > 100) {
     next(res.status(400).send({ msg: 'Error: Bad Request' }));
   } else {

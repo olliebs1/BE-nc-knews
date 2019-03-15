@@ -282,6 +282,12 @@ describe('/', () => {
         .then(({ body }) => {
           expect(body.msg).to.equal('Error: Bad Request');
         }));
+      it('GET request, Returns an error 400 when passed an invalid integer', () => request
+        .get('/api/articles/1234/comments')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
+        }));
       it('GET returns status: 200 and returns all the comments by article_id', () => request
         .get('/api/articles/6/comments')
         .expect(200)
@@ -332,7 +338,7 @@ describe('/', () => {
       .send({ inc_votes: 1 })
       .expect(202)
       .then((res) => {
-        console.log(res.body)
+        console.log(res.body);
         expect(res.body.updatedComment).to.contain.keys('comment_id', 'author', 'article_id', 'votes', 'body', 'created_at');
         expect(res.body.updatedComment).to.be.an('object');
         expect(res.body.updatedComment.votes).to.eql(101);
@@ -431,12 +437,22 @@ describe('/', () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).to.equal('Error: Route Not Found');
-      }))
+      }));
     it('Returns a error status 404 for a get request for a author that doesnt exist', () => request
       .get('/api/username=treacle')
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).to.equal('Error: Route Not Found');
+      }));
+  });
+  describe('/api', () => {
+    it('GET, returns status 200: and returns all endpoints', () => request
+      .get('/getApi')
+      .expect(200)
+      .then((res) => {
+        expect(res.status).to.eql(200);
+        expect(res.body.users).to.be.an('array');
+        expect(res.body.users[0]).to.contain.keys('username', 'avatar_url', 'name');
       }));
   });
 });
