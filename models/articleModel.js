@@ -31,7 +31,6 @@ const fetchArticlesById = article_id => connection
 
 
 const patchArticleById = (article_id, inc_votes) => connection
-  .select('*')
   .from('articles')
   .where({
     'articles.article_id': article_id,
@@ -40,7 +39,6 @@ const patchArticleById = (article_id, inc_votes) => connection
   .returning('*');
 
 const deleteArticle = article_id => connection
-  .select('*')
   .from('articles')
   .where({
     'articles.article_id': article_id,

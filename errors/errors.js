@@ -20,7 +20,7 @@ const error422 = (err, req, res, next) => {
 };
 
 const error500 = (err, req, res, next) => {
-  res.status(500).send({ mag: 'Error: Internal Server Error' });
+  res.status(500).send({ msg: 'Error: Internal Server Error' });
 };
 
 module.exports = {

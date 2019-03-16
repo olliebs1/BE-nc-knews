@@ -8,17 +8,17 @@ describe('articleDateTimeStamp', () => {
   const input = [{
     title: 'Hello',
     body: 'This is the body',
-    votes: 13 || 0,
+    votes: 13,
     topic: 'This is the topic',
     author: 'This is the author',
-    creates_at: 112293894,
+    created_at: 112293894,
   }];
-  xit('Returns an Array of items when userData is inserted into a table', () => {
+  it('Returns an array of the new data that has been created', () => {
     const actual = articleDateTimeStamp(input);
     const expected = [{
       title: 'Hello',
       body: 'This is the body',
-      votes: 13 || 0,
+      votes: 13,
       topic: 'This is the topic',
       author: 'This is the author',
       created_at: new Date(112293894),
@@ -40,7 +40,7 @@ describe('createRef', () => {
     article_id: 1,
     title: 'Test Title',
     body: 'Test body',
-    votes: 'Test votes' || 0,
+    votes: 13,
     topic: 'Test Topic',
     author: 'Test Author',
     created_at: 1233443233,
@@ -55,7 +55,7 @@ describe('createRef', () => {
       article_id: 1,
       title: 'Test Title',
       body: 'Test body',
-      votes: 'Test votes' || 0,
+      votes: 0,
       topic: 'Test Topic',
       author: 'Test Author',
       created_at: 1233443233,
@@ -63,7 +63,7 @@ describe('createRef', () => {
       article_id: 2,
       title: 'Test Title 2',
       body: 'Test body 2',
-      votes: 'Test votes 2' || 0,
+      votes: 0,
       topic: 'Test Topic 2',
       author: 'Test Author 2',
       created_at: 1233443343,

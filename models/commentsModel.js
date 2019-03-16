@@ -1,7 +1,6 @@
 const connection = require('../db/connection.js');
 
 const patchCommentById = (comment_id, inc_votes) => connection
-  .select('*')
   .from('comments')
   .where({
     'comments.comment_id': comment_id,
@@ -10,7 +9,6 @@ const patchCommentById = (comment_id, inc_votes) => connection
   .returning('*');
 
 const deleteComment = comment_id => connection
-  .select('*')
   .from('comments')
   .where({
     'comments.comment_id': comment_id,

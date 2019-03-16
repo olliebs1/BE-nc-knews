@@ -42,6 +42,10 @@ describe('/', () => {
         .then(({ body }) => {
           expect(body.msg).to.equal('Error: Unprocessible Entity');
         }));
+      it('GET request, Returns an error 405 when passed an invalid method', () => request
+        .put('/api/topics')
+        .expect(405)
+      )
       it('Returns a error status 405', () => request
         .patch('/api/topics')
         .expect(405)
@@ -155,6 +159,10 @@ describe('/', () => {
         expect(res.body.articles).to.be.an('object');
         expect(res.body.articles).to.contain.keys('article_id', 'title', 'body', 'created_at', 'topic', 'author', 'votes');
       }));
+    it('GET request, Returns an error 405 when passed an invalid method', () => request
+      .put('/api/articles')
+      .expect(405)
+    )
     it('Returns a error status 400 for a post request for a an article that has missing keys', () => request
       .post('/api/articles')
       .send({
@@ -191,7 +199,7 @@ describe('/', () => {
       .then(({ body }) => {
         expect(body.msg).to.equal('Error: Bad Request');
       }));
-    describe('/:article_id', () => {
+    describe('/articles/:article_id', () => {
       it('GET 200, Returns an article by its ID when passed an id into the parameters', () => request
         .get('/api/articles/1')
         .expect(200)
@@ -222,36 +230,29 @@ describe('/', () => {
         .then((res) => {
           expect(res.body.article[0]).to.contain.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at', 'comment_count');
         }));
-      it('PATCH, returns status:202, and increments vote of article by 1 when passed a newVote with the value of 1', () => request
+      it('PATCH, returns status:200, and increments vote of article by 1 when passed a newVote with the value of 1', () => request
         .patch('/api/articles/1')
         .send({
           inc_votes: 1,
         })
-        .expect(202)
+        .expect(200)
         .then((res) => {
           expect(res.body.updatedArticle[0]).to.be.an('object');
           expect(res.body.updatedArticle[0].votes).to.eql(101);
         }));
-      it('PATCH, returns an error 400 when no inc_votes is passed into the req.body', () => request
+      it('PATCH, returns a 200 when no inc_votes is passed into the req.body', () => request
         .patch('/api/articles/1')
-        .send({ teaPot: 1 })
+        .send({})
+        .expect(200)
+        .then((res) => {
+          expect(res.body.updatedArticle[0]).to.be.an('object');
+        }));
+      it('PATCH, returns an error 422 when inc_votes isnt passed an integer as its key value pair', () => request
+        .patch('/api/articles/1')
+        .send({ inc_votes: 'cat' })
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).to.equal('Error: Bad Request');
-        }));
-      it('PATCH, returns an error 422 when req.body is passed more than one property', () => request
-        .patch('/api/articles/1')
-        .send({ inc_votes: 1, teapots: 1 })
-        .expect(422)
-        .then(({ body }) => {
-          expect(body.msg).to.equal('Error: Unprocessible Entity');
-        }));
-      it('PATCH, returns an error 400 when inc_votes isnt passed an integer as its key value pair', () => request
-        .patch('/api/articles/1')
-        .send({ inc_votes: 'cat' })
-        .expect(422)
-        .then(({ body }) => {
-          expect(body.msg).to.equal('Error: Unprocessible Entity');
         }));
       it('DELETE status 204, Deletes an article when passed its id as a query', () => request
         .delete('/api/articles/1')
@@ -268,6 +269,10 @@ describe('/', () => {
         .then(({ body }) => {
           expect(body.msg).to.equal('Error: Bad Request');
         }));
+      it('GET request, Returns an error 405 when passed an invalid method', () => request
+        .put('/api/articles/1')
+        .expect(405)
+      )
     });
     describe('/:article_id/comments', () => {
       it('GET returns status: 200 and returns all the comments by article_id', () => request
@@ -278,6 +283,12 @@ describe('/', () => {
         }));
       it('GET request, Returns an error 400 when passed an invalid integer', () => request
         .get('/api/articles/dog/comments')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('Error: Bad Request');
+        }));
+      it('GET request, Returns an error 400 when passed an invalid integer', () => request
+        .get('/api/articles/barry-manilow/comments')
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).to.equal('Error: Bad Request');
@@ -318,7 +329,7 @@ describe('/', () => {
         }));
       it('Returns a error status 400 for a post method for a comment when the article_id that isnt an integer', () => request
         .post('/api/articles/dog/comments')
-        .send({ author: 'butter_bridge', body: 'What a brilliant comment', votes: 0 })
+        .send({ author: 'butter_bridge', body: 'What a brilliant comment' })
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).to.equal('Error: Bad Request');
@@ -330,15 +341,18 @@ describe('/', () => {
         .then(({ body }) => {
           expect(body.msg).to.equal('Error: Bad Request');
         }));
+      it('GET request, Returns an error 405 when passed an invalid method', () => request
+        .put('/api/articles/1234/comments')
+        .expect(405)
+      )
     });
   });
   describe('/comments/:comment_id', () => {
     it('PATCH, returns status: 202, and increments vote of comment by 1 when passed a newVote with the value of 1', () => request
       .patch('/api/comments/3')
       .send({ inc_votes: 1 })
-      .expect(202)
+      .expect(200)
       .then((res) => {
-        console.log(res.body);
         expect(res.body.updatedComment).to.contain.keys('comment_id', 'author', 'article_id', 'votes', 'body', 'created_at');
         expect(res.body.updatedComment).to.be.an('object');
         expect(res.body.updatedComment.votes).to.eql(101);
@@ -350,12 +364,19 @@ describe('/', () => {
       .then(({ body }) => {
         expect(body.msg).to.equal('Error: Bad Request');
       }));
+    it('PATCH, returns an error 400 when no inc_votes is passed into the req.body', () => request
+      .patch('/api/comments/dingo')
+      .send({ votes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Bad Request');
+      }));
     it('PATCH, returns an error 400 when inc_votes isnt passed an integer as its key value pair', () => request
       .patch('/api/comments/1')
       .send({ inc_votes: 'cat' })
-      .expect(422)
+      .expect(400)
       .then(({ body }) => {
-        expect(body.msg).to.equal('Error: Unprocessible Entity');
+        expect(body.msg).to.equal('Error: Bad Request');
       }));
     it('DELETE, returns status 204, and deletes the comments when passed its comment ID', () => request
       .delete('/api/comments/1')
@@ -363,6 +384,12 @@ describe('/', () => {
       .then((res) => {
         expect(res.status).to.eql(204);
         expect(res.body).to.eql({});
+      }));
+    it('DELETE, returns status 404, and deletes the comments when passed its comment ID', () => request
+      .delete('/api/comments/1999')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Route Not Found');
       }));
     it('DELETE method returns error 400 when deleting a comment and passed an id that isnt an integer', () => request
       .delete('/api/comments/cat')
@@ -376,6 +403,13 @@ describe('/', () => {
       .then(({ body }) => {
         expect(body.msg).to.equal('Error: Route Not Found');
       }));
+    it('Error 405 for a invalid method', () => request
+      .put('/api/comments/1')
+      .send({ inc_votes: 'cat' })
+      .expect(405)
+      .then(({ body }) => {
+        expect(body.msg).to.equal('Error: Method Not Allowed');
+      }));
   });
   describe('/users', () => {
     const userPost = {
@@ -383,6 +417,10 @@ describe('/', () => {
       avatar_url: 'www.google.co.uk',
       name: 'ollie',
     };
+    it('GET request, Returns an error 405 when passed an invalid method', () => request
+      .put('/api/users')
+      .expect(405)
+    )
     it('GET, returns status 200: and returns all users containing keys - username, avatar_url, name', () => request
       .get('/api/users')
       .expect(200)

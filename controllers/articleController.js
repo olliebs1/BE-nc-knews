@@ -64,15 +64,12 @@ const patchArticle = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
   const values = Object.values(req.body);
-  const keys = Object.keys(req.body);
-  if (inc_votes === undefined) {
+  if (isNaN(values)) {
     next(res.status(400).send({ msg: 'Error: Bad Request' }));
-  } else if (values !== Number) {
-    next(res.status(422).send({ msg: 'Error: Unprocessible Entity' }));
   } else {
     patchArticleById(article_id, inc_votes)
       .then((updatedArticle) => {
-        res.status(202).send({ updatedArticle });
+        res.status(200).send({ updatedArticle });
       }).catch((err) => {
         next(err);
       });
@@ -113,9 +110,9 @@ const getCommentsByArticleId = (req, res, next) => {
         } else {
           res.status(200).send({ comments });
         }
-      }).catch(err => {
-        next(err)
-      })
+      }).catch((err) => {
+        console.log(err);
+      });
   }
 };
 
