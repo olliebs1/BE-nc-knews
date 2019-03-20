@@ -1,14 +1,16 @@
 
-const methodNotFound = (req, res) => {
+const methodNotFound = (req, res, next) => {
+  console.log('inside methodNotFOund....');
   res.status(405).send({ msg: 'Error: Method Not Allowed' });
 };
 
 const error400 = (err, req, res, next) => {
+  console.log('here in error400')
   if (err.code === '23502' || err.code === '42703' || err.code === '23503' || err.code === '22P02') res.status(400).send({ msg: 'Error: Bad Request' });
   else next(err);
 };
 
-const routeNotFound = (req, res, next) => {
+const routeNotFound = (err, req, res, next) => {
   res.status(404).send({ msg: 'Error: Route Not Found' });
 };
 

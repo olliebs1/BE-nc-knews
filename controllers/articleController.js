@@ -25,9 +25,11 @@ const getArticles = (req, res, next) => {
     fetchAllArticles(authorConditions, topicCondition, createdCondition, sort_by, order)
 
       .then((articles) => {
+        console.log('sending all articles..')
         res.status(200).send({ articles });
       })
       .catch((err) => {
+        console.log(err, 'err')
         next(err);
       });
   }
