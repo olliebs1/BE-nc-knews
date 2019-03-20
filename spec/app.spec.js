@@ -44,8 +44,7 @@ describe('/', () => {
         }));
       it('GET request, Returns an error 405 when passed an invalid method', () => request
         .put('/api/topics')
-        .expect(405)
-      )
+        .expect(405));
       it('Returns a error status 405', () => request
         .patch('/api/topics')
         .expect(405)
@@ -161,8 +160,7 @@ describe('/', () => {
       }));
     it('GET request, Returns an error 405 when passed an invalid method', () => request
       .put('/api/articles')
-      .expect(405)
-    )
+      .expect(405));
     it('Returns a error status 400 for a post request for a an article that has missing keys', () => request
       .post('/api/articles')
       .send({
@@ -271,8 +269,7 @@ describe('/', () => {
         }));
       it('GET request, Returns an error 405 when passed an invalid method', () => request
         .put('/api/articles/1')
-        .expect(405)
-      )
+        .expect(405));
     });
     describe('/:article_id/comments', () => {
       it('GET returns status: 200 and returns all the comments by article_id', () => request
@@ -343,8 +340,7 @@ describe('/', () => {
         }));
       it('GET request, Returns an error 405 when passed an invalid method', () => request
         .put('/api/articles/1234/comments')
-        .expect(405)
-      )
+        .expect(405));
     });
   });
   describe('/comments/:comment_id', () => {
@@ -419,8 +415,7 @@ describe('/', () => {
     };
     it('GET request, Returns an error 405 when passed an invalid method', () => request
       .put('/api/users')
-      .expect(405)
-    )
+      .expect(405));
     it('GET, returns status 200: and returns all users containing keys - username, avatar_url, name', () => request
       .get('/api/users')
       .expect(200)
@@ -485,12 +480,11 @@ describe('/', () => {
   });
   describe('/api', () => {
     it('GET, returns status 200: and returns all endpoints', () => request
-      .get('/getApi')
+      .get('/api')
       .expect(200)
       .then((res) => {
         expect(res.status).to.eql(200);
-        expect(res.body.users).to.be.an('array');
-        expect(res.body.users[0]).to.contain.keys('username', 'avatar_url', 'name');
+        expect(res.body).to.be.an('object');
       }));
   });
 });
