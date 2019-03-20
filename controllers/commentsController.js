@@ -10,13 +10,16 @@ const patchComment = (req, res, next) => {
   } else {
     patchCommentById(comment_id, inc_votes)
       .then(([updatedComment]) => {
-        res.status(200).send({ updatedComment });
+        if (updatedComment === undefined) {
+          res.status(404).send({ msg: 'Error: Route Not Found' })
+        } else
+          res.status(200).send({ updatedComment });
       }).catch((err) => {
         next(err);
       });
   }
 };
-
+// write test to check to see if i get a 404 for a comment id that doesnt exist
 const removeComment = (req, res, next) => {
   const { comment_id } = req.params;
   const integer = parseInt(comment_id);

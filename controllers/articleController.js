@@ -19,6 +19,8 @@ const getArticles = (req, res, next) => {
   });
   if (req.query.order !== 'asc' && req.query.order !== 'desc' && req.query.order !== undefined) {
     next(res.status(400).send({ msg: 'Error: Bad Request' }));
+  } else if ('input sort by queries if testinf for an invalid sort by e.g frogs') {
+
   } else {
     fetchAllArticles(authorConditions, topicCondition, createdCondition, sort_by, order)
 
@@ -48,7 +50,7 @@ const getArticleById = (req, res, next) => {
     next(res.status(400).send({ msg: 'Error: Bad Request' }));
   } else {
     fetchArticlesById(article_id)
-      .then((article) => {
+      .then(([article]) => {
         if (article.length === 0) {
           next(res.status(404).send({ msg: 'Error: Route Not Found' }));
         } else {
@@ -68,7 +70,7 @@ const patchArticle = (req, res, next) => {
     next(res.status(400).send({ msg: 'Error: Bad Request' }));
   } else {
     patchArticleById(article_id, inc_votes)
-      .then((updatedArticle) => {
+      .then(([updatedArticle]) => {
         res.status(200).send({ updatedArticle });
       }).catch((err) => {
         next(err);
@@ -106,7 +108,7 @@ const getCommentsByArticleId = (req, res, next) => {
     fetchCommentsByArticleId(integer, sort_by, order)
       .then((comments) => {
         if (comments.length === 0) {
-          next(res.status(400).send({ msg: 'Error: Bad Request' }));
+          next(res.status(404).send({ msg: 'Error: Route Not Found' }));
         } else {
           res.status(200).send({ comments });
         }
@@ -127,7 +129,10 @@ const postCommentByArticleId = (req, res, next) => {
   } else {
     insertComment(comment, article_id)
       .then(([comment]) => {
-        res.status(201).send({ comment });
+        if (comment.length === 0) {
+          res.status(404).send({ msg: 'Error: Route Not Found' })
+        } else
+          res.status(201).send({ comment });
       }).catch((err) => {
         next(err);
       });

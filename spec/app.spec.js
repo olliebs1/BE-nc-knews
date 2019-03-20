@@ -202,7 +202,7 @@ describe('/', () => {
         .get('/api/articles/1')
         .expect(200)
         .then((res) => {
-          expect(res.body.article[0].article_id).to.equal(1);
+          expect(res.body.article.article_id).to.equal(1);
         }));
       it('GET request, Returns an error 400 by when passed an invalid integer', () => request
         .get('/api/articles/99999')
@@ -267,8 +267,8 @@ describe('/', () => {
         .then(({ body }) => {
           expect(body.msg).to.equal('Error: Bad Request');
         }));
-      it('GET request, Returns an error 405 when passed an invalid method', () => request
-        .put('/api/articles/1')
+      it('Returns an error 405 when passed an invalid method', () => request
+        .post('/api/articles/1')
         .expect(405));
     });
     describe('/:article_id/comments', () => {
@@ -292,9 +292,9 @@ describe('/', () => {
         }));
       it('GET request, Returns an error 400 when passed an invalid integer', () => request
         .get('/api/articles/1234/comments')
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
-          expect(body.msg).to.equal('Error: Bad Request');
+          expect(body.msg).to.equal('Error: Route Not Found');
         }));
       it('GET returns status: 200 and returns all the comments by article_id', () => request
         .get('/api/articles/6/comments')
@@ -334,10 +334,10 @@ describe('/', () => {
       it('Returns a error status 400 for a post method for a comment when the article_id that doesnt exist', () => request
         .post('/api/articles/1234/comments')
         .send({ author: 'butter_bridge', body: 'What a brilliant comment', votes: 0 })
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).to.equal('Error: Bad Request');
-        }));
+        .expect(4004
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Error: Route Not Found');
+          }));
       it('GET request, Returns an error 405 when passed an invalid method', () => request
         .put('/api/articles/1234/comments')
         .expect(405));
@@ -399,8 +399,8 @@ describe('/', () => {
       .then(({ body }) => {
         expect(body.msg).to.equal('Error: Route Not Found');
       }));
-    it('Error 405 for a invalid method', () => request
-      .put('/api/comments/1')
+    it('Returns an error 405 when passed an invalid method', () => request
+      .post('/api/comments/1')
       .send({ inc_votes: 'cat' })
       .expect(405)
       .then(({ body }) => {
@@ -416,6 +416,7 @@ describe('/', () => {
     it('GET request, Returns an error 405 when passed an invalid method', () => request
       .put('/api/users')
       .expect(405));
+    //patch/delete test error for a 405 ^ like above
     it('GET, returns status 200: and returns all users containing keys - username, avatar_url, name', () => request
       .get('/api/users')
       .expect(200)
