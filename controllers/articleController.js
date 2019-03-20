@@ -4,6 +4,7 @@ const {
 
 
 const getArticles = (req, res, next) => {
+  console.log('getting articles...')
   const { sort_by, order = 'desc' } = req.query;
   let authorConditions = {};
   let topicCondition = {};
@@ -19,8 +20,7 @@ const getArticles = (req, res, next) => {
   });
   if (req.query.order !== 'asc' && req.query.order !== 'desc' && req.query.order !== undefined) {
     next(res.status(400).send({ msg: 'Error: Bad Request' }));
-  } else if ('input sort by queries if testinf for an invalid sort by e.g frogs') {
-
+    //  'input sort by queries if testinf for an invalid sort by e.g frogs'
   } else {
     fetchAllArticles(authorConditions, topicCondition, createdCondition, sort_by, order)
 

@@ -16,7 +16,8 @@
     "seed:prod": "DB_URL=$(heroku config:get DATABASE_URL) knex seed:run --env production",
     "migrate:latest:prod": "DB_URL=$(heroku config:get DATABASE_URL) knex migrate:latest --env production",
     "migrate:rollback:prod": "DB_URL=$(heroku config:get DATABASE_URL) knex migrate:rollback --env production",
-    "start": "node listen.js"
+    "start": "node listen.js",
+    "dev": "nodemon listen.js"
   },
   "repository": {
     "type": "git",
@@ -42,6 +43,7 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "husky": "^1.1.4",
+    "nodemon": "^1.18.10",
     "supertest": "^3.4.2"
   }
 }
