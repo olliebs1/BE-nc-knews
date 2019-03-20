@@ -1,6 +1,4 @@
-
-const endPoints = require('../endpoints.json');
-
+const endPoints = require('../endPoints.json');
 
 const getApi = (req, res, next) => {
   res.status(200).send(endPoints).catch((err) => {

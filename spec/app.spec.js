@@ -337,7 +337,7 @@ describe('/', () => {
         .expect(4004
           .then(({ body }) => {
             expect(body.msg).to.equal('Error: Route Not Found');
-          }));
+          })));
       it('GET request, Returns an error 405 when passed an invalid method', () => request
         .put('/api/articles/1234/comments')
         .expect(405));
