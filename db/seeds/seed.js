@@ -1,4 +1,4 @@
-const { articleData, topicData, userData, commentData } = require('../data/development-data/index');
+const { articleData, topicData, userData, commentData } = require('../data/index.js');
 console.log(articleData)
 const { articleDateTimeStamp, createRef, createArticleIdLink } = require('../utils/utils');
 
