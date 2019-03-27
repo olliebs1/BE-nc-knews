@@ -4,7 +4,7 @@ const {
 
 
 const getArticles = (req, res, next) => {
-  console.log('getting articles...')
+  console.log('getting articles...');
   const { sort_by, order = 'desc' } = req.query;
   let authorConditions = {};
   let topicCondition = {};
@@ -25,11 +25,11 @@ const getArticles = (req, res, next) => {
     fetchAllArticles(authorConditions, topicCondition, createdCondition, sort_by, order)
 
       .then((articles) => {
-        console.log('sending all articles..')
+        console.log('sending all articles..');
         res.status(200).send({ articles });
       })
       .catch((err) => {
-        console.log(err, 'err')
+        console.log(err, 'err');
         next(err);
       });
   }
@@ -132,9 +132,8 @@ const postCommentByArticleId = (req, res, next) => {
     insertComment(comment, article_id)
       .then(([comment]) => {
         if (comment.length === 0) {
-          res.status(404).send({ msg: 'Error: Route Not Found' })
-        } else
-          res.status(201).send({ comment });
+          res.status(404).send({ msg: 'Error: Route Not Found' });
+        } else res.status(201).send({ comment });
       }).catch((err) => {
         next(err);
       });

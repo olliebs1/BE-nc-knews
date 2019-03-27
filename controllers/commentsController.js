@@ -11,9 +11,8 @@ const patchComment = (req, res, next) => {
     patchCommentById(comment_id, inc_votes)
       .then(([updatedComment]) => {
         if (updatedComment === undefined) {
-          res.status(404).send({ msg: 'Error: Route Not Found' })
-        } else
-          res.status(200).send({ updatedComment });
+          res.status(404).send({ msg: 'Error: Route Not Found' });
+        } else res.status(200).send({ updatedComment });
       }).catch((err) => {
         next(err);
       });

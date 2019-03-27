@@ -5,7 +5,7 @@ const methodNotFound = (req, res, next) => {
 };
 
 const error400 = (err, req, res, next) => {
-  console.log('here in error400')
+  console.log('here in error400');
   if (err.code === '23502' || err.code === '42703' || err.code === '23503' || err.code === '22P02') res.status(400).send({ msg: 'Error: Bad Request' });
   else next(err);
 };

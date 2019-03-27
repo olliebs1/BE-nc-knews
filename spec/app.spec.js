@@ -416,7 +416,7 @@ describe('/', () => {
     it('GET request, Returns an error 405 when passed an invalid method', () => request
       .put('/api/users')
       .expect(405));
-    //patch/delete test error for a 405 ^ like above
+    // patch/delete test error for a 405 ^ like above
     it('GET, returns status 200: and returns all users containing keys - username, avatar_url, name', () => request
       .get('/api/users')
       .expect(200)
