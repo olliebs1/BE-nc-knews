@@ -1,8 +1,6 @@
 const {
   articleData, topicData, userData, commentData,
-} = require('../data/index.js');
-
-console.log(articleData);
+} = require('../data');
 const { articleDateTimeStamp, createRef, createArticleIdLink } = require('../utils/utils');
 
 const seed = (knex, promise) => knex.migrate.rollback()
